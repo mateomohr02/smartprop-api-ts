@@ -1,0 +1,386 @@
+import { Model, DataTypes, Optional } from "sequelize";
+import { sequelize } from "@/db/sequelize";
+
+export type PropertyStatus =
+  | "draft"
+  | "active"
+  | "rented"
+  | "sold"
+  | "archived";
+
+export type Currency = "ARS" | "USD" | "EUR" | "BRL";
+export type PropertyOperationType = "rent" | "sale" | "short-term";
+export type PropertyCondition = "new" | "like-new" | "good" | "to-renovate";
+export type PropertyAvailabilityType = "immediate" | "date";
+
+export interface PropertyAttributes {
+  id: string;
+  tenantId: string;
+  status: PropertyStatus;
+
+  // 🔥 heat ahora es columna
+  heat: number;
+
+  metrics: {
+    views: number;
+    interactions: number;
+    shared: number;
+  };
+
+  isFeatured: boolean;
+  slug?: string;
+
+  title?: string;
+  description?: string;
+  propertyTypeId?: string;
+
+  // 🔥 Precio como columnas
+  priceAmount?: number;
+  priceCurrency?: Currency;
+
+  // 🔥 Expensas como columnas
+  expensesAmount?: number;
+  expensesCurrency?: Currency;
+
+  // 🔥 Ambientes como columna
+  roomsAmount?: number;
+
+  // 🔥 Ubicación como columnas (sin calle/numero)
+  neighborhoodId?: string;
+  cityId?: string;
+  provinceId?: string;
+  countryId?: string;
+
+  financing?: string;
+  operation?: PropertyOperationType;
+
+  // 🔷 JSON flexible restante
+  rooms?: {
+    bedrooms?: number;
+    bathrooms?: number;
+    garages?: number;
+  };
+
+  surface?: {
+    total?: number;
+    covered?: number;
+  };
+
+  services?: {
+    light?: boolean;
+    gas?: boolean;
+    water?: boolean;
+  };
+
+  condition?: PropertyCondition;
+  age?: number;
+
+  availability?: {
+    type?: PropertyAvailabilityType;
+    date?: Date;
+  };
+
+  location?: {
+    address?: {
+      street: string;
+      number?: number;
+    };
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
+  };
+
+  multimedia?: {
+    images?: string[];
+    videos?: string[];
+    blueprints?: string[];
+  };
+}
+
+export type PropertyCreationAttributes = Optional<
+  PropertyAttributes,
+  "id" | "metrics" | "isFeatured" | "status" | "heat"
+>;
+
+export class Property
+  extends Model<PropertyAttributes, PropertyCreationAttributes>
+  implements PropertyAttributes
+{
+  declare id: string;
+  declare tenantId: string;
+  declare status: PropertyStatus;
+
+  declare heat: number;
+
+  declare metrics: {
+    views: number;
+    interactions: number;
+    shared: number;
+  };
+
+  declare isFeatured: boolean;
+  declare slug?: string;
+
+  declare title?: string;
+  declare description?: string;
+  declare propertyTypeId?: string;
+
+  declare priceAmount?: number;
+  declare priceCurrency?: Currency;
+
+  declare expensesAmount?: number;
+  declare expensesCurrency?: Currency;
+
+  declare roomsAmount?: number;
+
+  declare neighborhoodId?: string;
+  declare cityId?: string;
+  declare provinceId?: string;
+  declare countryId?: string;
+
+  declare financing?: string;
+  declare operation?: PropertyOperationType;
+
+  declare rooms?: {
+    bedrooms?: number;
+    bathrooms?: number;
+    garages?: number;
+  };
+
+  declare surface?: {
+    total?: number;
+    covered?: number;
+  };
+
+  declare services?: {
+    light?: boolean;
+    gas?: boolean;
+    water?: boolean;
+  };
+
+  declare condition?: PropertyCondition;
+  declare age?: number;
+
+  declare availability?: {
+    type?: PropertyAvailabilityType;
+    date?: Date;
+  };
+
+  declare location?: PropertyAttributes["location"];
+  declare multimedia?: PropertyAttributes["multimedia"];
+
+  declare readonly createdAt: Date
+  declare readonly updatedAt: Date
+}
+
+Property.init(
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+
+    tenantId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: "tenants",
+        key: "id",
+      },
+      onDelete: "CASCADE",
+    },
+
+    status: {
+      type: DataTypes.ENUM(
+        "draft",
+        "active",
+        "rented",
+        "sold",
+        "archived"
+      ),
+      allowNull: false,
+      defaultValue: "draft",
+    },
+
+    // 🔥 Heat ahora columna real
+    heat: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0,
+    },
+
+    metrics: {
+      type: DataTypes.JSONB,
+      allowNull: false,
+      defaultValue: {
+        views: 0,
+        interactions: 0,
+        shared: 0,
+      },
+    },
+
+    isFeatured: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+
+    slug: {
+      type: DataTypes.STRING(150),
+      allowNull: true,
+    },
+
+    title: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
+    propertyTypeId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: "property_types",
+        key: "id",
+      },
+      onDelete: "SET NULL",
+    },
+
+    // 🔥 Precio columnas
+    priceAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
+    priceCurrency: {
+      type: DataTypes.ENUM("ARS", "USD", "EUR", "BRL"),
+      allowNull: true,
+    },
+
+    // 🔥 Expensas columnas
+    expensesAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
+    expensesCurrency: {
+      type: DataTypes.ENUM("ARS", "USD", "EUR", "BRL"),
+      allowNull: true,
+    },
+
+    // 🔥 Ambientes columna
+    roomsAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
+    // 🔥 Ubicación columnas
+    neighborhoodId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+
+    cityId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+
+    provinceId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+
+    countryId: {
+      type: DataTypes.UUID,
+      allowNull: true,
+    },
+
+    financing: {
+      type: DataTypes.STRING(120),
+      allowNull: true,
+    },
+
+    operation: {
+      type: DataTypes.ENUM("rent", "sale", "short-term"),
+      allowNull: true,
+    },
+
+    rooms: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+
+    surface: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+
+    services: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+
+    condition: {
+      type: DataTypes.ENUM(
+        "new",
+        "like-new",
+        "good",
+        "to-renovate"
+      ),
+      allowNull: true,
+    },
+
+    age: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
+    availability: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+
+    location: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+
+    multimedia: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    tableName: "properties",
+    timestamps: true,
+
+    indexes: [
+      { unique: true, fields: ["tenantId", "slug"] },
+
+      { fields: ["tenantId", "status"] },
+      { fields: ["tenantId", "operation"] },
+      { fields: ["tenantId", "propertyTypeId"] },
+
+      // 🔥 filtros principales optimizados
+      { fields: ["tenantId", "priceAmount"] },
+      { fields: ["tenantId", "roomsAmount"] },
+      { fields: ["tenantId", "cityId"] },
+      { fields: ["tenantId", "neighborhoodId"] },
+
+      // 🔥 orden principal
+      { fields: ["tenantId", "heat"] },
+      { fields: ["isFeatured"] },
+
+      // 🔷 GIN solo donde aporta valor
+      { using: "GIN", fields: ["services"] },
+      { using: "GIN", fields: ["surface"] },
+    ],
+  }
+);
