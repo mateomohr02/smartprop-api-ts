@@ -25,7 +25,7 @@ export interface SubscriptionAttributes {
 
 export type SubscriptionCreationAttributes = Optional<
   SubscriptionAttributes,
-  "id" | "endsAt"
+  "id"
 >;
 
 export class Subscription

@@ -2,7 +2,8 @@ import { router as authRouter } from '@/modules/auth/auth.router';
 import { router as tenantRouter } from '@/modules/tenant/tenant.router';
 import { router as userRouter } from '@/modules/user/user.router';
 import { router as propertyRouter } from '@/modules/property/proprety.router';
-
+import { router as planRouter } from '@/modules/plan/plan.router';
+import { router as subscriptionRotuer } from '@/modules/subscription/subscription.router';
 
 
 import { Router } from 'express'
@@ -18,3 +19,6 @@ router.use('/auth', authRouter);
 router.use('/tenant', tenantRouter);
 router.use('/user', validateTenant, userRouter);
 router.use('/property', propertyRouter);
+router.use('/plan', planRouter);
+router.use('/subscription', subscriptionRotuer);
+

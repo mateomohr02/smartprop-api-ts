@@ -5,7 +5,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "module": "CommonJS",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
