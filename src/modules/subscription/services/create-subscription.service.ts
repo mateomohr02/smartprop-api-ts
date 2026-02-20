@@ -36,9 +36,9 @@ export const createSubscription = async (
 ) => {
 
   try {
-
+    
     return await sequelize.transaction(async (t) => {
-
+      
       const plan = await Plan.findByPk(newSubscription.planId, {
         transaction: t,
       });
@@ -46,9 +46,11 @@ export const createSubscription = async (
       if (!plan) {
         throw new AppError("Plan not found", 404);
       }
+      
 
       const now = new Date();
       const expirationDate = addBillingCycle(now, newSubscription.billingCycle);
+      
 
       //---------------------------------------------------
       // FALTA - VALIDACIÓN DEL PAGO
@@ -57,10 +59,10 @@ export const createSubscription = async (
       const subscription = await Subscription.create(
         {
           billingCycle: newSubscription.billingCycle,
-          autoRenew: newSubscription.autoRenew,
+          autoRenew: true,
           priceSnapshot: plan.price,
           featuresSnapshot: plan.features,
-          status: "active", // luego podría depender del pago
+          status: "active", 
           startedAt: now,
           endsAt: expirationDate,
           tenantId: tenant.id,
@@ -68,7 +70,6 @@ export const createSubscription = async (
         },
         { transaction: t }
       );
-
       return subscription;
     });
 
@@ -78,7 +79,6 @@ export const createSubscription = async (
     if (error instanceof UniqueConstraintError) {
       throw new AppError("Tenant already has an active subscription", 409);
     }
-
     throw new AppError("Error creating subscription", 500);
   }
 };

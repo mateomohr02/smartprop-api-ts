@@ -13,9 +13,7 @@ export const EnrollTenantSchema = z.object({
         phone: z.string().optional(),
         password: z.string().min(8)
     }),
-    subscription: z.object({
-
-    })
+    // subscription: z.object({})
 })
 
 export type EnrollTenantSchemaType = z.infer<typeof EnrollTenantSchema>
