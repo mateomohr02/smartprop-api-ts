@@ -4,7 +4,7 @@ import { createPlan } from "../services/create-plan.service";
 import { catchAsync } from "@/utils/catchAsync";
 
 export const createPlanController = catchAsync( async (req: Request<{}, {}, CreatePlanSchemaType>, res: Response) => {
-    const createdPlan = createPlan(req.body);
+    const createdPlan = await createPlan(req.body);
 
     return res.status(200).json({
       status: "success",

@@ -10,7 +10,7 @@ export const CreatePlanSchema = z.object({
         ai: z.boolean(),
         socialMedia: z.boolean(),
     }),
-    isActive: z.boolean(),
+    isActive: z.boolean().optional(),
 });
 
 export type CreatePlanSchemaType = z.infer<typeof CreatePlanSchema>;
