@@ -28,74 +28,74 @@ export interface PropertyAttributes {
   };
 
   isFeatured: boolean;
-  slug?: string;
+  slug?: string | null;
 
-  title?: string;
-  description?: string;
-  propertyTypeId?: string;
+  title?: string | null;
+  description?: string | null;
+  propertyTypeId?: string | null;
 
   // 🔥 Precio como columnas
-  priceAmount?: number;
-  priceCurrency?: Currency;
+  priceAmount?: number | null;
+  priceCurrency?: Currency | null;
 
   // 🔥 Expensas como columnas
-  expensesAmount?: number;
-  expensesCurrency?: Currency;
+  expensesAmount?: number | null;
+  expensesCurrency?: Currency | null;
 
   // 🔥 Ambientes como columna
-  roomsAmount?: number;
+  roomsAmount?: number | null;
 
   // 🔥 Ubicación como columnas (sin calle/numero)
-  neighborhoodId?: string;
-  cityId?: string;
-  provinceId?: string;
-  countryId?: string;
+  neighborhoodId?: string | null;
+  cityId?: string | null;
+  provinceId?: string | null;
+  countryId?: string | null;
 
-  financing?: string;
-  operation?: PropertyOperationType;
+  financing?: string | null;
+  operation?: PropertyOperationType | null;
 
   // 🔷 JSON flexible restante
   rooms?: {
-    bedrooms?: number;
-    bathrooms?: number;
-    garages?: number;
-  };
+    bedrooms?: number | null;
+    bathrooms?: number | null;
+    garages?: number | null;
+  } | null;
 
   surface?: {
-    total?: number;
-    covered?: number;
-  };
+    total?: number | null;
+    covered?: number | null;
+  } | null;
 
   services?: {
-    light?: boolean;
-    gas?: boolean;
-    water?: boolean;
-  };
+    light?: boolean | null;
+    gas?: boolean | null;
+    water?: boolean | null;
+  } | null;
 
-  condition?: PropertyCondition;
-  age?: number;
+  condition?: PropertyCondition | null;
+  age?: number | null;
 
   availability?: {
-    type?: PropertyAvailabilityType;
-    date?: Date;
-  };
+    type?: PropertyAvailabilityType | null;
+    date?: Date | null;
+  } | null;
 
   location?: {
     address?: {
       street: string;
-      number?: number;
-    };
+      number?: number | null;
+    } | null;
     coordinates?: {
       lat: number;
       lng: number;
     };
-  };
+  } | null;
 
   multimedia?: {
-    images?: string[];
-    videos?: string[];
-    blueprints?: string[];
-  };
+    images?: string[] | null;
+    videos?: string[] | null;
+    blueprints?: string[]  | null;
+  } | null;
 }
 
 export type PropertyCreationAttributes = Optional<
