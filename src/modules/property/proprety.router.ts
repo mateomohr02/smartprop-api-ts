@@ -7,4 +7,4 @@ import { updatePropertyController } from "./controllers/update-property.controll
 export const router = Router();
 
 router.post('/create', authenticate, createPropertyController);
-router.post('/update', authenticate, updatePropertyController);
+router.put('/update', authenticate, updatePropertyController);
