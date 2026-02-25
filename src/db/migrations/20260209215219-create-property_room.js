@@ -31,6 +31,13 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
+      detail: {
+        type: Sequelize.JSONB,
+        defaultValue: {
+          amount: 1,
+          size: [],
+        },
+      },
 
       tenantId: {
         type: Sequelize.UUID,

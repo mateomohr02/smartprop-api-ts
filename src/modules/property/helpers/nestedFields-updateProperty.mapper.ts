@@ -61,17 +61,17 @@ export const nestedFieldsMapper = (
         }
   }
 
-  if (fields.rooms) {
-        if (fields.rooms.bedrooms !== undefined) {
-            updateData.rooms.bedrooms = fields.rooms.bedrooms;
+  if (fields.roomsSummary) {
+        if (fields.roomsSummary.bedrooms !== undefined) {
+            updateData.rooms.bedrooms = fields.roomsSummary.bedrooms;
         }
 
-        if (fields.rooms.bathrooms !== undefined) {
-            updateData.rooms.bathrooms = fields.rooms.bathrooms;
+        if (fields.roomsSummary.bathrooms !== undefined) {
+            updateData.roomsSummary.bathrooms = fields.roomsSummary.bathrooms;
         }
 
-        if (fields.rooms.garages !== undefined) {
-            updateData.rooms.garages = fields.rooms.garages;
+        if (fields.roomsSummary.garages !== undefined) {
+            updateData.roomsSummary.garages = fields.roomsSummary.garages;
         }
   }
 

@@ -6,6 +6,7 @@ import { router as planRouter } from '@/modules/plan/plan.router';
 import { router as subscriptionRotuer } from '@/modules/subscription/subscription.router';
 import { router as comodityRouter } from '@/modules/comodity/comodity.router';
 import { router as characteristicRouter } from '@/modules/characteristic/characteristic.router';
+import {router as roomRouter} from '@/modules/room/room.router';
 
 import { Router } from 'express'
 import { validateTenant } from './middlewares/validateTenant';
@@ -21,6 +22,7 @@ router.use('/tenant', tenantRouter);
 router.use('/user', validateTenant, userRouter);
 router.use('/property', propertyRouter);
 router.use('/comodity', comodityRouter);
+router.use('/room',  roomRouter)
 router.use('/characteristic', characteristicRouter);
 router.use('/plan', planRouter);
 router.use('/subscription', subscriptionRotuer);

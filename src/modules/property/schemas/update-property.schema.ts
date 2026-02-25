@@ -29,7 +29,7 @@ export const UpdatePropertySchema = z.object({
     blueprints: z.array(z.string()).optional(),
   }),
   roomsAmount: z.number().optional(),
-  rooms: z.object({
+  roomsSummary: z.object({
     bedrooms: z.number().optional(),
     bathrooms: z.number().optional(),
     garages: z.number().optional(),

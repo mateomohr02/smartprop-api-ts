@@ -223,7 +223,7 @@ export const initModels = async () => {
       through: Property_Room,
       foreignKey: "propertyId",
       otherKey: "roomId",
-      as: "properties_rooms",
+      as: "rooms", // ✅
     });
 
     Room.belongsToMany(Property, {
@@ -253,12 +253,8 @@ export const initModels = async () => {
 
     await sequelize.authenticate();
     console.log("DB connected");
-
   } catch (error) {
-    
     console.error("DB error", error);
     process.exit(1);
-  
   }
 };
-

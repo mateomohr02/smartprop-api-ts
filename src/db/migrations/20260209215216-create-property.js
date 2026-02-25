@@ -154,7 +154,7 @@ module.exports = {
         allowNull: true,
       },
 
-      rooms: {
+      roomsSummary: {
         type: Sequelize.JSONB,
         allowNull: true,
       },

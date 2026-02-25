@@ -64,7 +64,7 @@ export interface PropertyAttributes {
   operation?: PropertyOperationType | null;
 
   //  JSON flexible restante
-  rooms?: {
+  roomsSummary?: {
     bedrooms?: number | null;
     bathrooms?: number | null;
     garages?: number | null;
@@ -151,7 +151,7 @@ export class Property
   declare financing?: string;
   declare operation?: PropertyOperationType;
 
-  declare rooms?: {
+  declare roomsSummary?: {
     bedrooms?: number;
     bathrooms?: number;
     garages?: number;
@@ -183,7 +183,7 @@ export class Property
 
   declare comodities?: Characteristic[];
   declare characteristics?: Characteristic[];
-  declare detailRooms?: Room[];
+  declare rooms?: Room[];
 
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
@@ -200,10 +200,10 @@ export class Property
   declare addCharacteristics: BelongsToManyAddAssociationsMixin<Characteristic, string>;
   declare setCharacteristics: BelongsToManySetAssociationsMixin<Characteristic, string>;
 
-  declare getRooms: BelongsToManyGetAssociationsMixin<Characteristic>;
-  declare addRoom: BelongsToManyAddAssociationMixin<Characteristic, string>;
-  declare addRooms: BelongsToManyAddAssociationsMixin<Characteristic, string>;
-  declare setRooms: BelongsToManySetAssociationsMixin<Characteristic, string>;
+  declare getRooms: BelongsToManyGetAssociationsMixin<Room>;
+  declare addRoom: BelongsToManyAddAssociationMixin<Room, string>;
+  declare addRooms: BelongsToManyAddAssociationsMixin<Room, string>;
+  declare setRooms: BelongsToManySetAssociationsMixin<Room, string>;
 }
 
 Property.init(
@@ -337,7 +337,7 @@ Property.init(
       allowNull: true,
     },
 
-    rooms: {
+    roomsSummary: {
       type: DataTypes.JSONB,
       allowNull: true,
     },

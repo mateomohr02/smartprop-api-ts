@@ -20,7 +20,7 @@ export const toCreateOrUpdatePropertyDTO = (property: Property) => {
         },
         multimedia: property.multimedia,
         roomsAmount: property.roomsAmount,
-        rooms: property.rooms,
+        roomsSummary: property.roomsSummary,
         surface: property.surface,
         services: property.services,
         condition: property.condition,
