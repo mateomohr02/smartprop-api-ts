@@ -1,5 +1,14 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "@/db/sequelize";
+import { Comodity } from "./Comodity.model";
+import { Characteristic } from "./Characteristic.model";
+import {
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyAddAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  BelongsToManyGetAssociationsMixin,
+} from "sequelize";
+import { Room } from "./Room.model";
 
 export type PropertyStatus =
   | "draft"
@@ -18,7 +27,7 @@ export interface PropertyAttributes {
   tenantId: string;
   status: PropertyStatus;
 
-  // 🔥 heat ahora es columna
+  //  heat ahora es columna
   heat: number;
 
   metrics: {
@@ -34,18 +43,18 @@ export interface PropertyAttributes {
   description?: string | null;
   propertyTypeId?: string | null;
 
-  // 🔥 Precio como columnas
+  //  Precio como columnas
   priceAmount?: number | null;
   priceCurrency?: Currency | null;
 
-  // 🔥 Expensas como columnas
+  //  Expensas como columnas
   expensesAmount?: number | null;
   expensesCurrency?: Currency | null;
 
-  // 🔥 Ambientes como columna
+  //  Ambientes como columna
   roomsAmount?: number | null;
 
-  // 🔥 Ubicación como columnas (sin calle/numero)
+  //  Ubicación como columnas (sin calle/numero)
   neighborhoodId?: string | null;
   cityId?: string | null;
   provinceId?: string | null;
@@ -54,7 +63,7 @@ export interface PropertyAttributes {
   financing?: string | null;
   operation?: PropertyOperationType | null;
 
-  // 🔷 JSON flexible restante
+  //  JSON flexible restante
   rooms?: {
     bedrooms?: number | null;
     bathrooms?: number | null;
@@ -94,7 +103,7 @@ export interface PropertyAttributes {
   multimedia?: {
     images?: string[] | null;
     videos?: string[] | null;
-    blueprints?: string[]  | null;
+    blueprints?: string[] | null;
   } | null;
 }
 
@@ -170,8 +179,31 @@ export class Property
   declare location?: PropertyAttributes["location"];
   declare multimedia?: PropertyAttributes["multimedia"];
 
-  declare readonly createdAt: Date
-  declare readonly updatedAt: Date
+  // Relaciones
+
+  declare comodities?: Characteristic[];
+  declare characteristics?: Characteristic[];
+  declare detailRooms?: Room[];
+
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
+
+  // MIXINS MANY TO MANY (Comodities)
+
+  declare getComodities: BelongsToManyGetAssociationsMixin<Comodity>;
+  declare addComodity: BelongsToManyAddAssociationMixin<Comodity, string>;
+  declare addComodities: BelongsToManyAddAssociationsMixin<Comodity, string>;
+  declare setComodities: BelongsToManySetAssociationsMixin<Comodity, string>;
+
+  declare getCharacteristics: BelongsToManyGetAssociationsMixin<Characteristic>;
+  declare addCharacteristic: BelongsToManyAddAssociationMixin<Characteristic, string>;
+  declare addCharacteristics: BelongsToManyAddAssociationsMixin<Characteristic, string>;
+  declare setCharacteristics: BelongsToManySetAssociationsMixin<Characteristic, string>;
+
+  declare getRooms: BelongsToManyGetAssociationsMixin<Characteristic>;
+  declare addRoom: BelongsToManyAddAssociationMixin<Characteristic, string>;
+  declare addRooms: BelongsToManyAddAssociationsMixin<Characteristic, string>;
+  declare setRooms: BelongsToManySetAssociationsMixin<Characteristic, string>;
 }
 
 Property.init(
@@ -193,13 +225,7 @@ Property.init(
     },
 
     status: {
-      type: DataTypes.ENUM(
-        "draft",
-        "active",
-        "rented",
-        "sold",
-        "archived"
-      ),
+      type: DataTypes.ENUM("draft", "active", "rented", "sold", "archived"),
       allowNull: false,
       defaultValue: "draft",
     },
@@ -327,12 +353,7 @@ Property.init(
     },
 
     condition: {
-      type: DataTypes.ENUM(
-        "new",
-        "like-new",
-        "good",
-        "to-renovate"
-      ),
+      type: DataTypes.ENUM("new", "like-new", "good", "to-renovate"),
       allowNull: true,
     },
 
@@ -382,5 +403,5 @@ Property.init(
       { using: "GIN", fields: ["services"] },
       { using: "GIN", fields: ["surface"] },
     ],
-  }
+  },
 );
