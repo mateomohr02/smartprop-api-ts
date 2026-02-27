@@ -1,8 +1,5 @@
 import { Model, DataTypes, Optional } from "sequelize";
 import { sequelize } from "@/db/sequelize";
-import { Room } from "./Room.model";
-import { Characteristic } from "./Characteristic.model";
-import { Comodity } from "./Comodity.model";
 
 export interface SearchAttributes {
   id: string;

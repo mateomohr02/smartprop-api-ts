@@ -7,7 +7,10 @@ export interface SearchSummaryAttributes {
 
   date: string; // YYYY-MM-DD
 
-  filterType: 
+  filterType:
+    | "priceRange"
+    | "expensesRange"
+    | "roomsRange"
     | "city"
     | "neighborhood"
     | "propertyType"
@@ -20,13 +23,14 @@ export interface SearchSummaryAttributes {
     | "characteristics"
     | "comodities";
 
-  filterValue: string; // uuid o valor numérico serializado
-
+  filterValue: string;
   count: number;
 }
 
-export type SearchSummaryCreationAttributes =
-  Optional<SearchSummaryAttributes, "id">;
+export type SearchSummaryCreationAttributes = Optional<
+  SearchSummaryAttributes,
+  "id"
+>;
 
 export class SearchSummary
   extends Model<SearchSummaryAttributes, SearchSummaryCreationAttributes>
@@ -37,6 +41,9 @@ export class SearchSummary
 
   declare date: string;
   declare filterType:
+    | "priceRange"
+    | "expensesRange"
+    | "roomsRange"
     | "city"
     | "neighborhood"
     | "propertyType"
@@ -80,6 +87,9 @@ SearchSummary.init(
 
     filterType: {
       type: DataTypes.ENUM(
+        "priceRange",
+        "expensesRange",
+        "roomsRange",
         "city",
         "neighborhood",
         "propertyType",
@@ -113,8 +123,12 @@ SearchSummary.init(
       { fields: ["tenantId"] },
       { fields: ["tenantId", "date"] },
       { fields: ["tenantId", "filterType"] },
+      { fields: ["tenantId", "date", "filterType"] }, 
       { fields: ["tenantId", "filterType", "filterValue"] },
-      { unique: true, fields: ["tenantId", "date", "filterType", "filterValue"] },
+      {
+        unique: true,
+        fields: ["tenantId", "date", "filterType", "filterValue"],
+      },
     ],
   }
 );

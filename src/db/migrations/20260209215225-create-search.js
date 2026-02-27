@@ -2,12 +2,6 @@ import { DataTypes } from "sequelize";
 
 export default {
   up: async (queryInterface) => {
-    // 1️⃣ Crear ENUM
-    await queryInterface.sequelize.query(`
-      CREATE TYPE "enum_searches_operationType"
-      AS ENUM ('sale', 'rent', 'short-term');
-    `);
-
     // 2️⃣ Crear tabla
     await queryInterface.createTable("searches", {
       id: {
@@ -38,7 +32,7 @@ export default {
       },
 
       operationType: {
-        type: "enum_searches_operationType",
+        type: DataTypes.ENUM("sale", "rent", "short-term"),
         allowNull: true,
       },
 
@@ -169,7 +163,6 @@ export default {
     await queryInterface.addIndex("searches", ["tenantId", "bathrooms"]);
     await queryInterface.addIndex("searches", ["tenantId", "garages"]);
 
-    // 4️⃣ GIN Indexes para arrays (clave 🔥)
     await queryInterface.sequelize.query(`
       CREATE INDEX searches_rooms_gin
       ON searches

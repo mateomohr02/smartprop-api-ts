@@ -1,25 +1,7 @@
-import { DataTypes } from "sequelize";
+import { QueryInterface, DataTypes } from "sequelize";
 
 export default {
   up: async (queryInterface) => {
-    // 1️⃣ Crear ENUM
-    await queryInterface.sequelize.query(`
-      CREATE TYPE "enum_search_summaries_filterType"
-      AS ENUM (
-        'city',
-        'neighborhood',
-        'propertyType',
-        'operationType',
-        'bedrooms',
-        'bathrooms',
-        'garages',
-        'financing',
-        'rooms',
-        'characteristics',
-        'comodities'
-      );
-    `);
-
     // 2️⃣ Crear tabla
     await queryInterface.createTable("search_summaries", {
       id: {
@@ -45,7 +27,22 @@ export default {
       },
 
       filterType: {
-        type: "enum_search_summaries_filterType",
+        type: DataTypes.ENUM(
+          "priceRange",
+          "expensesRange",
+          "roomsRange",
+          "city",
+          "neighborhood",
+          "propertyType",
+          "operationType",
+          "bedrooms",
+          "bathrooms",
+          "garages",
+          "financing",
+          "rooms",
+          "characteristics",
+          "comodities",
+        ),
         allowNull: false,
       },
 
@@ -72,7 +69,7 @@ export default {
       },
     });
 
-    // 3️⃣ Indexes normales
+    // 3️⃣ Indexes
     await queryInterface.addIndex("search_summaries", ["tenantId"]);
     await queryInterface.addIndex("search_summaries", ["tenantId", "date"]);
     await queryInterface.addIndex("search_summaries", [
@@ -81,11 +78,15 @@ export default {
     ]);
     await queryInterface.addIndex("search_summaries", [
       "tenantId",
+      "date",
+      "filterType",
+    ]);
+    await queryInterface.addIndex("search_summaries", [
+      "tenantId",
       "filterType",
       "filterValue",
     ]);
 
-    // 4️⃣ Unique constraint (clave 🔥)
     await queryInterface.addConstraint("search_summaries", {
       fields: ["tenantId", "date", "filterType", "filterValue"],
       type: "unique",
