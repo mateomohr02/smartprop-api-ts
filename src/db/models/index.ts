@@ -18,6 +18,11 @@ import { Property_Comodity } from "./Property_Comodity.model";
 import { Property_Room } from "./Property_Room.model";
 
 import { Property } from "./Property.model";
+import { Metric } from "./Metric.model";
+import { Search } from "./Search.model";
+import { MetricSummary } from "./Metric_Summary.model";
+import { SearchSummary } from "./Search_Summary.model";
+import { Post } from "./Post.model";
 
 export const initModels = async () => {
   try {
@@ -231,6 +236,83 @@ export const initModels = async () => {
       foreignKey: "roomId",
       otherKey: "propertyId",
       as: "properties",
+    });
+
+    Post.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Tenant.hasMany(Post, {
+      foreignKey: "tenantId",
+      as: "posts",
+      onDelete: "CASCADE",
+    })
+
+    //METRIC AND SEARCHES RELATIONS
+
+    Tenant.hasMany(Metric, {
+      foreignKey: "tenantId",
+      as: "metrics",
+      onDelete: "CASCADE",
+    });
+
+    Metric.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Tenant.hasMany(Search, {
+      foreignKey: "tenantId",
+      as: "searches",
+      onDelete: "CASCADE",
+    });
+
+    Search.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Tenant.hasMany(MetricSummary, {
+      foreignKey: "tenantId",
+      as: "metric_summaries",
+      onDelete: "CASCADE",
+    });
+
+    MetricSummary.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Tenant.hasMany(SearchSummary, {
+      foreignKey: "tenantId",
+      as: "search_summaries",
+      onDelete: "CASCADE",
+    });
+
+    SearchSummary.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Property.hasMany(Metric, {
+      foreignKey: "propertyId",
+      as: "property_metrics",
+    });
+
+    Metric.belongsTo(Property, {
+      foreignKey: "propertyId",
+      as: "property",
+    });
+
+    Post.hasMany(Metric, {
+      foreignKey: "postId",
+      as: "post_metrics",
+    });
+
+    Metric.belongsTo(Post, {
+      foreignKey: "postId",
+      as: "post",
     });
 
     // ======================================================

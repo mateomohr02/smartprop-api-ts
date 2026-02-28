@@ -28,13 +28,14 @@ export interface MetricAttributes {
 
   type: MetricType;
   source: Source;
-  metadata: Record<string, any>;
+  metadata: Record<string, any> | null;
 
-  propertyId: string;
-  postId: string;
+  propertyId: string | null;
+  postId: string | null;
 }
 
-export type MetricCreationAttributes = Optional<MetricAttributes, "id">;
+export type MetricCreationAttributes = Optional<MetricAttributes, 
+"id" | "metadata" | "propertyId" | "postId">;
 
 export class Metric
   extends Model<MetricAttributes, MetricCreationAttributes>
@@ -45,10 +46,10 @@ export class Metric
 
   declare type: MetricType;
   declare source: Source;
-  declare metadata: Record<string, any>;
+  declare metadata: Record<string, any> | null;
 
-  declare propertyId: string;
-  declare postId: string;
+  declare propertyId: string | null;
+  declare postId: string | null;
 
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
@@ -68,6 +69,7 @@ Metric.init(
         model: "tenants",
         key: "id",
       },
+      onDelete: "CASCADE",
     },
     type: {
       type: DataTypes.ENUM(
@@ -92,7 +94,7 @@ Metric.init(
     },
     metadata: {
       type: DataTypes.JSONB,
-      allowNull: false,
+      allowNull: true,
     },
     propertyId: {
       type: DataTypes.UUID,

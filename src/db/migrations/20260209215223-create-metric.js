@@ -50,7 +50,8 @@ module.exports = {
 
       metadata: {
         type: Sequelize.JSONB,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: null,
       },
 
       propertyId: {
