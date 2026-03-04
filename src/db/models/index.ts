@@ -19,10 +19,15 @@ import { Property_Room } from "./Property_Room.model";
 
 import { Property } from "./Property.model";
 import { Metric } from "./Metric.model";
+import { Metric_Summary } from "./Metric_Summary.model";
+
 import { Search } from "./Search.model";
-import { MetricSummary } from "./Metric_Summary.model";
 import { SearchSummary } from "./Search_Summary.model";
+
+import { Campaign } from "./Campaign.model";
 import { Post } from "./Post.model";
+import { MetricType } from "./Metric_Type.model";
+import { MetricSource } from "./Metric_Source.model";
 
 export const initModels = async () => {
   try {
@@ -30,7 +35,6 @@ export const initModels = async () => {
     // MULTI-TENANT ROOT
     // ======================================================
 
-    // Tenant - Subscription
     Tenant.hasMany(Subscription, {
       foreignKey: "tenantId",
       as: "subscriptions",
@@ -42,7 +46,6 @@ export const initModels = async () => {
       as: "tenant",
     });
 
-    // Plan - Subscription
     Plan.hasMany(Subscription, {
       foreignKey: "planId",
       as: "subscriptions",
@@ -53,7 +56,6 @@ export const initModels = async () => {
       as: "plan",
     });
 
-    // Tenant - User
     Tenant.hasMany(User, {
       foreignKey: "tenantId",
       as: "users",
@@ -61,6 +63,18 @@ export const initModels = async () => {
     });
 
     User.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    // 🔥 Tenant <-> Campaign
+    Tenant.hasMany(Campaign, {
+      foreignKey: "tenantId",
+      as: "campaigns",
+      onDelete: "CASCADE",
+    });
+
+    Campaign.belongsTo(Tenant, {
       foreignKey: "tenantId",
       as: "tenant",
     });
@@ -76,6 +90,17 @@ export const initModels = async () => {
     });
 
     Property.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Tenant.hasMany(Post, {
+      foreignKey: "tenantId",
+      as: "posts",
+      onDelete: "CASCADE",
+    });
+
+    Post.belongsTo(Tenant, {
       foreignKey: "tenantId",
       as: "tenant",
     });
@@ -125,44 +150,22 @@ export const initModels = async () => {
     });
 
     // ======================================================
-    // GEOGRAFÍA (GLOBAL)
+    // GEOGRAFÍA
     // ======================================================
 
-    Country.hasMany(Province, {
-      foreignKey: "countryId",
-      as: "provinces",
-    });
+    Country.hasMany(Province, { foreignKey: "countryId", as: "provinces" });
+    Province.belongsTo(Country, { foreignKey: "countryId", as: "country" });
 
-    Province.belongsTo(Country, {
-      foreignKey: "countryId",
-      as: "country",
-    });
+    Province.hasMany(City, { foreignKey: "provinceId", as: "cities" });
+    City.belongsTo(Province, { foreignKey: "provinceId", as: "province" });
 
-    Province.hasMany(City, {
-      foreignKey: "provinceId",
-      as: "cities",
-    });
-
-    City.belongsTo(Province, {
-      foreignKey: "provinceId",
-      as: "province",
-    });
-
-    City.hasMany(Neighborhood, {
-      foreignKey: "cityId",
-      as: "neighborhoods",
-    });
-
-    Neighborhood.belongsTo(City, {
-      foreignKey: "cityId",
-      as: "city",
-    });
+    City.hasMany(Neighborhood, { foreignKey: "cityId", as: "neighborhoods" });
+    Neighborhood.belongsTo(City, { foreignKey: "cityId", as: "city" });
 
     // ======================================================
     // PROPERTY RELATIONS
     // ======================================================
 
-    // PropertyType
     PropertyType.hasMany(Property, {
       foreignKey: "propertyTypeId",
       as: "properties",
@@ -173,7 +176,6 @@ export const initModels = async () => {
       as: "propertyType",
     });
 
-    // Ubicación
     Country.hasMany(Property, { foreignKey: "countryId" });
     Property.belongsTo(Country, { foreignKey: "countryId", as: "country" });
 
@@ -193,7 +195,6 @@ export const initModels = async () => {
     // MANY TO MANY
     // ======================================================
 
-    // Characteristics
     Property.belongsToMany(Characteristic, {
       through: Property_Characteristic,
       foreignKey: "propertyId",
@@ -208,7 +209,6 @@ export const initModels = async () => {
       as: "properties",
     });
 
-    // Comodities
     Property.belongsToMany(Comodity, {
       through: Property_Comodity,
       foreignKey: "propertyId",
@@ -223,12 +223,11 @@ export const initModels = async () => {
       as: "properties",
     });
 
-    // Rooms (detalle, no JSON)
     Property.belongsToMany(Room, {
       through: Property_Room,
       foreignKey: "propertyId",
       otherKey: "roomId",
-      as: "rooms", // ✅
+      as: "rooms",
     });
 
     Room.belongsToMany(Property, {
@@ -238,29 +237,9 @@ export const initModels = async () => {
       as: "properties",
     });
 
-    Post.belongsTo(Tenant, {
-      foreignKey: "tenantId",
-      as: "tenant",
-    });
-
-    Tenant.hasMany(Post, {
-      foreignKey: "tenantId",
-      as: "posts",
-      onDelete: "CASCADE",
-    })
-
-    //METRIC AND SEARCHES RELATIONS
-
-    Tenant.hasMany(Metric, {
-      foreignKey: "tenantId",
-      as: "metrics",
-      onDelete: "CASCADE",
-    });
-
-    Metric.belongsTo(Tenant, {
-      foreignKey: "tenantId",
-      as: "tenant",
-    });
+    // ======================================================
+    // SEARCH RELATIONS
+    // ======================================================
 
     Tenant.hasMany(Search, {
       foreignKey: "tenantId",
@@ -269,17 +248,6 @@ export const initModels = async () => {
     });
 
     Search.belongsTo(Tenant, {
-      foreignKey: "tenantId",
-      as: "tenant",
-    });
-
-    Tenant.hasMany(MetricSummary, {
-      foreignKey: "tenantId",
-      as: "metric_summaries",
-      onDelete: "CASCADE",
-    });
-
-    MetricSummary.belongsTo(Tenant, {
       foreignKey: "tenantId",
       as: "tenant",
     });
@@ -295,9 +263,38 @@ export const initModels = async () => {
       as: "tenant",
     });
 
+    // ======================================================
+    // METRICS RELATIONS
+    // ======================================================
+
+    // TENANT
+    Tenant.hasMany(Metric, {
+      foreignKey: "tenantId",
+      as: "metrics",
+      onDelete: "CASCADE",
+    });
+
+    Metric.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    Tenant.hasMany(Metric_Summary, {
+      foreignKey: "tenantId",
+      as: "metric_summaries",
+      onDelete: "CASCADE",
+    });
+
+    Metric_Summary.belongsTo(Tenant, {
+      foreignKey: "tenantId",
+      as: "tenant",
+    });
+
+    // PROPERTY
     Property.hasMany(Metric, {
       foreignKey: "propertyId",
       as: "property_metrics",
+      onDelete: "SET NULL",
     });
 
     Metric.belongsTo(Property, {
@@ -305,9 +302,22 @@ export const initModels = async () => {
       as: "property",
     });
 
+    Property.hasMany(Metric_Summary, {
+      foreignKey: "propertyId",
+      as: "property_metric_summaries",
+      onDelete: "SET NULL",
+    });
+
+    Metric_Summary.belongsTo(Property, {
+      foreignKey: "propertyId",
+      as: "property",
+    });
+
+    // POST
     Post.hasMany(Metric, {
       foreignKey: "postId",
       as: "post_metrics",
+      onDelete: "SET NULL",
     });
 
     Metric.belongsTo(Post, {
@@ -315,21 +325,114 @@ export const initModels = async () => {
       as: "post",
     });
 
+    Post.hasMany(Metric_Summary, {
+      foreignKey: "postId",
+      as: "post_metric_summaries",
+      onDelete: "SET NULL",
+    });
+
+    Metric_Summary.belongsTo(Post, {
+      foreignKey: "postId",
+      as: "post",
+    });
+
+    MetricType.hasMany(Metric, {
+      foreignKey: "typeId",
+      as: "metrics",
+      onDelete: "CASCADE",
+    });
+
+    MetricType.hasMany(Metric_Summary, {
+      foreignKey: "typeId",
+      as: "metricSummaries",
+      onDelete: "CASCADE",
+    });
+
+    // ==========================
+    // MetricSource Relations
+    // ==========================
+
+    MetricSource.hasMany(Metric, {
+      foreignKey: "sourceId",
+      as: "metrics",
+      onDelete: "CASCADE",
+    });
+
+    MetricSource.hasMany(Metric_Summary, {
+      foreignKey: "sourceId",
+      as: "metricSummaries",
+      onDelete: "CASCADE",
+    });
+
+    MetricSource.hasMany(Campaign, {
+      foreignKey: "sourceId",
+      as: "campaigns",
+      onDelete: "CASCADE",
+    })
+
+    Campaign.belongsTo(MetricSource, {
+      foreignKey: "sourceId",
+      as: "source",
+    })
+
+    // ==========================
+    // Metric Relations
+    // ==========================
+
+    Metric.belongsTo(MetricType, {
+      foreignKey: "typeId",
+      as: "type",
+    });
+
+    Metric.belongsTo(MetricSource, {
+      foreignKey: "sourceId",
+      as: "source",
+    });
+
+    // ==========================
+    // Metric_Summary Relations
+    // ==========================
+
+    Metric_Summary.belongsTo(MetricType, {
+      foreignKey: "typeId",
+      as: "type",
+    });
+
+    Metric_Summary.belongsTo(MetricSource, {
+      foreignKey: "sourceId",
+      as: "source",
+    });
+
+    // CAMPAIGN ↔ METRICS
+    Campaign.hasMany(Metric, {
+      foreignKey: "campaignId",
+      as: "campaign_metrics",
+      onDelete: "SET NULL",
+    });
+
+    Metric.belongsTo(Campaign, {
+      foreignKey: "campaignId",
+      as: "campaign",
+    });
+
+    Campaign.hasMany(Metric_Summary, {
+      foreignKey: "campaignId",
+      as: "campaign_metric_summaries",
+      onDelete: "SET NULL",
+    });
+
+    Metric_Summary.belongsTo(Campaign, {
+      foreignKey: "campaignId",
+      as: "campaign",
+    });
+
     // ======================================================
-    // INTERMEDIATE TABLE ↔ TENANT (opcional pero recomendado)
+    // INTERMEDIATE TABLE ↔ TENANT
     // ======================================================
 
-    Tenant.hasMany(Property_Characteristic, {
-      foreignKey: "tenantId",
-    });
-
-    Tenant.hasMany(Property_Comodity, {
-      foreignKey: "tenantId",
-    });
-
-    Tenant.hasMany(Property_Room, {
-      foreignKey: "tenantId",
-    });
+    Tenant.hasMany(Property_Characteristic, { foreignKey: "tenantId" });
+    Tenant.hasMany(Property_Comodity, { foreignKey: "tenantId" });
+    Tenant.hasMany(Property_Room, { foreignKey: "tenantId" });
 
     // ======================================================
 

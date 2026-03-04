@@ -1,70 +1,76 @@
-import { Model, DataTypes, Optional } from "sequelize";
-import { sequelize } from "@/db/sequelize";
-import { MetricType, Source } from "./Metric.model";
+import {
+  Model,
+  DataTypes,
+  Optional,
+} from "sequelize"
+import { sequelize } from "@/db/sequelize"
 
-export type Period = "day" | "week" | "month" | "year";
+export type MetricPeriod = "day" | "week" | "month"
 
 export interface MetricSummaryAttributes {
-  id: string;
-  tenantId: string;
-
-  period: Period; //-> Day | Week | Month | Year
-  periodStart: Date; //-> 2025-02-26 | 9 | 2 | 2025
-
-  type: MetricType;
-  ammount: number;
-  source: Source;
-  campaign: string | null;
-
-  propertyId: string;
-  postId: string;
+  id: string
+  tenantId: string
+  typeId: string
+  period: MetricPeriod
+  periodStart: Date
+  amount: number
+  sourceId: string
+  campaignId?: string | "00000000-0000-0000-0000-000000000000"
+  propertyId?: string | "00000000-0000-0000-0000-000000000000"
+  postId?: string | "00000000-0000-0000-0000-000000000000"
 }
 
 export type MetricSummaryCreationAttributes = Optional<
   MetricSummaryAttributes,
-  "id"
->;
+  "id" | "campaignId" | "propertyId" | "postId"
+>
 
-export class MetricSummary
-  extends Model<MetricSummaryAttributes, MetricSummaryCreationAttributes>
+export class Metric_Summary
+  extends Model<
+    MetricSummaryAttributes,
+    MetricSummaryCreationAttributes
+  >
   implements MetricSummaryAttributes
 {
-  declare id: string;
-  declare tenantId: string;
+  declare id: string
+  declare tenantId: string
+  declare typeId:string
+  declare period: MetricPeriod
+  declare periodStart: Date
+  declare amount: number
+  declare sourceId: string
+  declare campaignId?: string | "00000000-0000-0000-0000-000000000000"
+  declare propertyId?: string | "00000000-0000-0000-0000-000000000000"
+  declare postId?: string | "00000000-0000-0000-0000-000000000000"
 
-  declare period: Period;
-  declare periodStart: Date;
-
-  declare type: MetricType;
-  declare ammount: number;
-  declare source: Source;
-  declare campaign: string | null;
-
-  declare propertyId: string;
-  declare postId: string;
-
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+  declare readonly createdAt: Date
+  declare readonly updatedAt: Date
 }
 
-MetricSummary.init(
+Metric_Summary.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+
     tenantId: {
       type: DataTypes.UUID,
       allowNull: false,
+    },
+
+    typeId: {
+      type: DataTypes.UUID,
       references: {
-        model: "tenants",
+        model: "metric_types",
         key: "id",
       },
+      allowNull: false,
     },
 
     period: {
-      type: DataTypes.ENUM("day", "week", "month", "year"),
+      type: DataTypes.ENUM("day", "month"),
       allowNull: false,
     },
 
@@ -73,83 +79,67 @@ MetricSummary.init(
       allowNull: false,
     },
 
-    type: {
-      type: DataTypes.ENUM(
-        "visit_site",
-        "visit_blog",
-        "visit_post",
-        "visit_property",
-        "share_property",
-        "share_post",
-        "search",
-        "contact_whatsapp",
-        "contact_email",
-        "contact_instagram",
-        "contact_facebook",
-        "contact_form",
-      ),
-      allowNull: false,
-    },
-    ammount: {
+    amount: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
-    source: {
-      type: DataTypes.ENUM(
-        "organic",
-        "instagram",
-        "facebook",
-        "tiktok",
-        "google",
-      ),
+
+    sourceId: {
+      type: DataTypes.UUID,
+      references: {
+        model: "metric_sources",
+        key: "id",
+      },
       allowNull: false,
     },
-    campaign: {
-      type: DataTypes.STRING,
-      allowNull: true,
+
+    campaignId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      defaultValue:"00000000-0000-0000-0000-000000000000"
     },
+
     propertyId: {
       type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "properties",
-        key: "id",
-      },
+      allowNull: false,
+      defaultValue:"00000000-0000-0000-0000-000000000000"
     },
+
     postId: {
       type: DataTypes.UUID,
-      allowNull: true,
-      references: {
-        model: "posts",
-        key: "id",
-      },
+      allowNull: false,
+      defaultValue:"00000000-0000-0000-0000-000000000000"
     },
   },
   {
     sequelize,
+    modelName: "Metric_Summary",
     tableName: "metric_summaries",
     timestamps: true,
-    paranoid: true,
+
     indexes: [
-      { fields: ["tenantId", "period", "periodStart"] },
-      { fields: ["tenantId", "type"] },
-      { fields: ["tenantId", "propertyId"] },
-      { fields: ["tenantId", "postId"] },
-      { fields: ["tenantId", "source"] },
-      { fields: ["tenantId", "campaign"] },
+      { fields: ["tenantId"] },
+      { fields: ["typeId"] },
+      { fields: ["period"] },
+      { fields: ["periodStart"] },
+      { fields: ["sourceId"] },
+      { fields: ["campaignId"] },
+      { fields: ["propertyId"] },
+      { fields: ["postId"] },
       {
         unique: true,
         fields: [
           "tenantId",
+          "typeId",
           "period",
           "periodStart",
-          "type",
-          "source",
-          "campaign",
+          "sourceId",
+          "campaignId",
           "propertyId",
           "postId",
         ],
       },
     ],
-  },
-);
+  }
+)

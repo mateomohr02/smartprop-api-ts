@@ -8,6 +8,7 @@ import { router as comodityRouter } from '@/modules/comodity/comodity.router';
 import { router as characteristicRouter } from '@/modules/characteristic/characteristic.router';
 import {router as roomRouter} from '@/modules/room/room.router';
 import { router as metricRouter } from '@/modules/metrics/metrics.router';
+import { router as metricSummaryRouter } from '@/modules/metric_summary/metric_summary.router';
 
 import { Router } from 'express'
 import { validateTenant } from './middlewares/validateTenant';
@@ -29,4 +30,5 @@ router.use('/plan', planRouter);
 router.use('/subscription', subscriptionRotuer);
 
 router.use('/metric', metricRouter);
+router.use('/metric-summary', metricSummaryRouter)
 

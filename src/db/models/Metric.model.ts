@@ -1,58 +1,40 @@
-import { Model, DataTypes, Optional } from "sequelize";
-import { sequelize } from "@/db/sequelize";
-
-export type Source =  'organic' | 'instagram' | 'facebook' | 'tiktok' | 'google'
-
-export type MetricType =
-  | "visit_site" //-> Visit Site
-
-  | "visit_blog" //-> Visit Blog
-  | "visit_post" //-> Visit Blog Post
-  
-  | "visit_property" //-> Visit Property Detail
-
-  | "share_property" //-> Share Property
-  | "share_post" //-> Share Post
-  
-  | "search" //-> Filters Applied
-  
-  | "contact_whatsapp" //-> Contact Whatsapp
-  | "contact_email" //-> Contact Email
-  | "contact_instagram" //-> Contact Instagram
-  | "contact_facebook" //-> Contact Facebook
-  | "contact_form" //-> Contact Form Submitted
-
+import {
+  Model,
+  DataTypes,
+  Optional,
+} from "sequelize"
+import { sequelize } from "@/db/sequelize"
 export interface MetricAttributes {
-  id: string;
-  tenantId: string;
-
-  type: MetricType;
-  source: Source;
-  metadata: Record<string, any> | null;
-
-  propertyId: string | null;
-  postId: string | null;
+  id: string
+  tenantId: string
+  typeId: string
+  sourceId: string
+  campaignId?: string | "00000000-0000-0000-0000-000000000000"
+  propertyId?: string | "00000000-0000-0000-0000-000000000000"
+  postId?: string | "00000000-0000-0000-0000-000000000000"
+  createdAt?: Date
+  updatedAt?: Date
 }
 
-export type MetricCreationAttributes = Optional<MetricAttributes, 
-"id" | "metadata" | "propertyId" | "postId">;
+export type MetricCreationAttributes = Optional<
+  MetricAttributes,
+  "id" | "sourceId" | "campaignId" | "propertyId" | "postId"
+>
 
 export class Metric
   extends Model<MetricAttributes, MetricCreationAttributes>
   implements MetricAttributes
 {
-  declare id: string;
-  declare tenantId: string;
+  declare id: string
+  declare tenantId: string
+  declare typeId: string 
+  declare sourceId: string
+  declare campaignId?: string | "00000000-0000-0000-0000-000000000000"
+  declare propertyId?: string | "00000000-0000-0000-0000-000000000000"
+  declare postId?: string | "00000000-0000-0000-0000-000000000000"
 
-  declare type: MetricType;
-  declare source: Source;
-  declare metadata: Record<string, any> | null;
-
-  declare propertyId: string | null;
-  declare postId: string | null;
-
-  declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
+  declare readonly createdAt: Date
+  declare readonly updatedAt: Date
 }
 
 Metric.init(
@@ -62,69 +44,82 @@ Metric.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+
     tenantId: {
       type: DataTypes.UUID,
       allowNull: false,
+    },
+
+    typeId: {
+      type: DataTypes.UUID,
       references: {
-        model: "tenants",
+        model: "metric_types",
         key: "id",
       },
+      allowNull: false,
       onDelete: "CASCADE",
     },
-    type: {
-      type: DataTypes.ENUM(
-        "visit_site",
-        "visit_blog",
-        "visit_post",
-        "visit_property",
-        "share_property",
-        "share_post",
-        "search",
-        "contact_whatsapp",
-        "contact_email",
-        "contact_instagram",
-        "contact_facebook",
-        "contact_form",
-      ),
+
+    sourceId: {
+      type: DataTypes.UUID,
+      references: {
+        model: "metric_sources",
+        key: "id",
+      },
       allowNull: false,
+      onDelete: "CASCADE",
     },
-    source: {
-      type: DataTypes.ENUM('organic', 'instagram', 'facebook', 'tiktok', 'google'),
+
+    campaignId: {
+      type: DataTypes.UUID,
+      references: {
+        model: "campaigns",
+        key: "id",
+      },
       allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
+      onDelete: "CASCADE",
     },
-    metadata: {
-      type: DataTypes.JSONB,
-      allowNull: true,
-    },
+
     propertyId: {
       type: DataTypes.UUID,
-      allowNull: true,
       references: {
         model: "properties",
         key: "id",
       },
+      allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
+      onDelete: "CASCADE",
     },
+
     postId: {
       type: DataTypes.UUID,
-      allowNull: true,
       references: {
         model: "posts",
         key: "id",
       },
+      allowNull: false,
+      defaultValue: "00000000-0000-0000-0000-000000000000",
+      onDelete: "CASCADE",
     },
   },
   {
     sequelize,
+    modelName: "Metric",
     tableName: "metrics",
     timestamps: true,
-    paranoid: true,
+
     indexes: [
-        { fields: ["tenantId"] },
-        { fields: ["tenantId", "type"] },
-        { fields: ["tenantId","source"] },
-        { fields: ["tenantId", "propertyId"] },
-        { fields: ["tenantId", "postId"] },
-        { fields: ["tenantId", "createdAt"] }
+      { fields: ["tenantId"] },
+      { fields: ["typeId"] },
+      { fields: ["sourceId"] },
+      { fields: ["campaignId"] },
+      { fields: ["propertyId"] },
+      { fields: ["postId"] },
+      { fields: ["createdAt"] },
+
+      // índice compuesto clave para agregaciones por periodo
+      { fields: ["tenantId", "typeId", "createdAt"] },
     ],
-  },
-);
+  }
+)

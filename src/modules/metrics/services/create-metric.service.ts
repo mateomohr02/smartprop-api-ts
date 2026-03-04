@@ -1,29 +1,42 @@
-import { RequestTenantDTO } from "@/modules/tenant/dtos/request-tenant.dto";
-import { CreateMetricSchemaType } from "../schemas/create-metric.schema";
-import { AppError } from "@/utils/AppError";
-import { Metric } from "@/db/models/Metric.model";
+import { Metric } from "@/db/models/Metric.model"
+import { CreateMetricSchemaType } from "../schemas/create-metric.schema"
+import { RequestTenantDTO } from "@/modules/tenant/dtos/request-tenant.dto"
+import { MetricType } from "@/db/models/Metric_Type.model"
+import { MetricSource } from "@/db/models/Metric_Source.model"
+import { AppError } from "@/utils/AppError"
 
 export const createMetric = async (
   metric: CreateMetricSchemaType,
-  tenant: RequestTenantDTO,
+  tenant: RequestTenantDTO
 ) => {
+  
+  const type = await MetricType.findOne({
+    where: {
+      slug: metric.typeSlug
+    }
+  })
 
-  if (metric.postId && metric.propertyId) {
-    throw new AppError("Metric must have either postId or propertyId, not both", 400);
+  const source = await MetricSource.findOne({
+    where: {
+      slug: metric.sourceSlug
+    }
+  })
+
+  if (!type || !source){
+    throw new AppError("Invalid type or source", 400)
   }
 
-  const metadata = metric.campaignId ? { campaignId: metric.campaignId } : null;
-
-  const metricData = {
+  const newMetricData = {
     tenantId: tenant.id,
-    postId: metric.postId || null,
-    source: metric.source || 'organic',
-    propertyId: metric.propertyId || null,    
-    type: metric.type,
-    metadata    
+    typeId: type.id,
+    sourceId: source.id,
+    propertyId: metric.propertyId || "00000000-0000-0000-0000-000000000000",
+    postId: metric.postId || "00000000-0000-0000-0000-000000000000",
+    campaignId: metric.campaignId || "00000000-0000-0000-0000-000000000000"
   }
 
-  const createdMetric = await Metric.create(metricData)
+  const newMetric = await Metric.create(newMetricData)
 
-  return createdMetric;
-};
+  return newMetric
+
+}
