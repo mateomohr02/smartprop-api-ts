@@ -50,8 +50,6 @@ export const getMetricSummaries = async (
     ...(searchedMetric.postId && { postId: searchedMetric.postId }),
   };
 
-  console.log(where);
-
   const metricSummaries = await Metric_Summary.findAll({
     where,
   });
