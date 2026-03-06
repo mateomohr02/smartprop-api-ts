@@ -53,4 +53,6 @@ export const env = {
       "JWT_REFRESH_EXPIRES_IN",
     ) as SignOptions["expiresIn"],
   },
+
+  zeroUUID: getEnv("ZERO_UUID")
 };
