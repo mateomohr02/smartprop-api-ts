@@ -1,7 +1,8 @@
 import { validateTenant } from "@/middlewares/validateTenant";
 import { Router } from "express";
 import { createMetricController } from "./controllers/create-metric.controller";
+import { validateSubscription } from "@/middlewares/validateSubscription";
 
 export const router = Router();
 
-router.post("/create", validateTenant, createMetricController)
+router.post("/create", validateTenant, validateSubscription, createMetricController)

@@ -1,3 +1,4 @@
+import { RequestSubscriptionDTO } from "@/modules/subscription/dtos/request-subscription.dto";
 import { RequestTenantDTO } from "@/modules/tenant/dtos/request-tenant.dto";
 import { RequestUserDTO } from "@/modules/user/dtos/request-user.dto";
 
@@ -6,6 +7,7 @@ declare global {
     interface Request {
       tenant?: RequestTenantDTO;
       user?: RequestUserDTO;
+      subscription?: RequestSubscriptionDTO;
     }
   }
 }
