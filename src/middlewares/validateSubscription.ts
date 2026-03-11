@@ -32,8 +32,6 @@ export const validateSubscription = catchAsync(
     }
 
     req.subscription = toRequestSubscriptionDTOMapper(subscription);
-
-    console.log(req);
     
     next();
   },
