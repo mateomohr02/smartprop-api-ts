@@ -13,6 +13,7 @@ export const metricTypes = [
   "contact-phone",
   "contact-email",
   "contact-form",
+  "search"
 ] as const
 
 export const metricSources = [

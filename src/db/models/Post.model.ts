@@ -15,6 +15,11 @@ export interface PostAttributes {
   title: string
   content: unknown[]
   status: PostStatus
+  metrics: {
+    views: number
+    interactions: number
+    shared: number
+  }
 }
 
 export type PostCreationAttributes = Optional<
@@ -33,6 +38,12 @@ export class Post
   declare slug: string
   declare content: unknown[]
   declare status: PostStatus
+  declare metrics: {
+    views: number;
+    interactions: number;
+    shared: number;
+  };
+
 
   declare readonly createdAt: Date
   declare readonly updatedAt: Date
@@ -57,6 +68,16 @@ Post.init(
       allowNull: false,
     },
     
+    metrics: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: {
+        views: 0,
+        interactions: 0,
+        shared: 0
+      }
+    },
+
     content: {
       type: DataTypes.JSON,
       allowNull: false,

@@ -20,6 +20,16 @@ module.exports = {
         allowNull: false,
       },
 
+      metrics: {
+        type: Sequelize.JSONB,
+        allowNull: false,
+        defaultValue: {
+          views: 0,
+          interactions: 0,
+          shared: 0,
+        },
+      },
+
       content: {
         type: Sequelize.JSONB, // PostgreSQL recomendado
         allowNull: false,
