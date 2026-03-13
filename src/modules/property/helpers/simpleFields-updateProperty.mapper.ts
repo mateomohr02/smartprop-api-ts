@@ -4,7 +4,6 @@ export const simpleFieldsMapper = (
   updateData: any,
   fields: UpdatePropertySchemaType,
 ): any => {
-  console.log("Incoming Update Data:", updateData);
 
   if (fields.title !== undefined) {
     updateData.title = fields.title;
@@ -29,7 +28,6 @@ export const simpleFieldsMapper = (
   if (fields.isFeatured !== undefined) {
     updateData.isFeatured = fields.isFeatured;
   }
-  console.log("Outgoing Update Data:", updateData);
 
   return updateData;
 };

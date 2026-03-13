@@ -392,8 +392,10 @@ Property.init(
       // 🔥 filtros principales optimizados
       { fields: ["tenantId", "priceAmount"] },
       { fields: ["tenantId", "roomsAmount"] },
-      { fields: ["tenantId", "cityId"] },
-      { fields: ["tenantId", "neighborhoodId"] },
+      { fields: ["tenantId", "status", "countryId"]},
+      { fields: ["tenantId", "status", "provinceId"]},
+      { fields: ["tenantId", "status", "cityId"] },
+      { fields: ["tenantId", "status", "neighborhoodId"] },
 
       // 🔥 orden principal
       { fields: ["tenantId", "heat"] },

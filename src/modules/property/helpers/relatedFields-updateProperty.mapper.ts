@@ -9,9 +9,6 @@ export const relatedFieldsMapper = async (
   tenant: RequestTenantDTO,
 ) => {
 
-  console.log(updateData, 'incoming fields related');
-  
-
   if (fields.propertyType) {
     let updatePropertyType;
 
@@ -87,8 +84,6 @@ export const relatedFieldsMapper = async (
 
     updateData.neighborhoodId = fields.neighborhood.id;
   }
-
-  console.log(updateData, 'outgoing fields related');
 
   return updateData;
 };

@@ -4,14 +4,22 @@ import { RequestTenantDTO } from "@/modules/tenant/dtos/request-tenant.dto";
 
 export const getAvailableCountries = async (tenant: RequestTenantDTO) => {
 
-    const availableCountriesForTenant = await Property.findAll({
-        where: {tenantId: tenant.id},
-        include: {
-            model: Country,
-            as: 'country'
-        }
-    })
+  const countries = await Country.findAll({
+    attributes: ["id","name", "slug"],
+    include: [
+      {
+        model: Property,
+        as: "Properties",
+        attributes: [],
+        where: {
+          tenantId: tenant.id,
+          status: "active",
+        },
+        required: true, // INNER JOIN
+      },
+    ],
+    group: ["Country.id"],
+  });
 
-    console.log(availableCountriesForTenant, 'availableCountries');
-
-}
+  return countries;
+};

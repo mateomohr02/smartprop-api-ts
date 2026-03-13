@@ -5,8 +5,6 @@ export const nestedFieldsMapper = (
   fields: UpdatePropertySchemaType,
 ) => {
 
-  console.log('Incoming Update Data:', updateData);
-
   if (fields.price) {
     if (fields.price.amount !== undefined) {
       updateData.priceAmount = fields.price.amount;
@@ -108,8 +106,6 @@ export const nestedFieldsMapper = (
             }
         }
   }
-
-  console.log('Outgoing Update Data:', updateData);
 
   return updateData;
 };

@@ -18,37 +18,37 @@ export const UpdatePropertySchema = z.object({
   price: z.object({
     amount: z.number().optional(),
     currency: z.enum(["ARS", "USD", "EUR", "BRL"]).optional(),
-  }),
+  }).optional(),
   expenses: z.object({
     amount: z.number().optional(),
     currency: z.enum(["ARS", "USD", "EUR", "BRL"]).optional(),
-  }),
+  }).optional(),
   multimedia: z.object({
     images: z.array(z.string()).optional(),
     videos: z.array(z.string()).optional(),
     blueprints: z.array(z.string()).optional(),
-  }),
+  }).optional(),
   roomsAmount: z.number().optional(),
   roomsSummary: z.object({
     bedrooms: z.number().optional(),
     bathrooms: z.number().optional(),
     garages: z.number().optional(),
-  }),
+  }).optional(),
   surface: z.object({
     total: z.number().optional(),
     covered: z.number().optional(),
-  }),
+  }).optional(),
   services: z.object({
     light: z.boolean().optional(),
     gas: z.boolean().optional(),
     water: z.boolean().optional(),
-  }),
+  }).optional(),
   condition: z.enum(["new", "like-new", "good", "to-renovate"]).optional(),
   age: z.number().optional(),
   availability: z.object({
     type: z.enum(["immediate", "date"]).optional(),
     date: z.date().optional(),
-  }),
+  }).optional(),
   location: z.object({
     address: z.object({
       street: z.string(),
@@ -58,7 +58,7 @@ export const UpdatePropertySchema = z.object({
       lat: z.number(),
       lng: z.number(),
     }),
-  }),
+  }).optional(),
   country: z.object({
     exists: z.boolean(),
     id: z.string().uuid().optional(),

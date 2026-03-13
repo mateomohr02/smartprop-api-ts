@@ -12,8 +12,6 @@ export const updatePropertyController = catchAsync (async (req: Request<{}, {}, 
 
     const updatedProperty = await updateProperty(req.body, req.tenant, req.user );
 
-    console.log(updateProperty, 'updatedProperty');
-
     return res.status(200).json({
         status:"success",
         data:updatedProperty
