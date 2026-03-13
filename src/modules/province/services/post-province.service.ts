@@ -20,7 +20,7 @@ export const postProvince = async (newProvince: FindOrCreateProvinceSchemaType, 
     const slug = slugify(newProvince.name);
 
     const existingProvince = await Province.findOne({
-        where: { slug }
+        where: { slug, countryId: newProvince.countryId }
     })
 
     if (existingProvince) {

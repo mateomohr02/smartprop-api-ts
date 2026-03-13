@@ -20,7 +20,7 @@ export const postCity = async (newCity: FindOrCreateCitySchemaType, tenant: Requ
     const slug = slugify(newCity.name);
 
     const existingCity = await City.findOne({
-        where: { slug }
+        where: { slug, provinceId: newCity.provinceId}
     })
 
     if (existingCity) {
