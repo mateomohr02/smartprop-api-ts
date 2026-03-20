@@ -33,7 +33,7 @@ export const updateProperty = async(receivedProperty:UpdatePropertySchemaType, t
 
     updateData = await simpleFieldsMapper(updateData, receivedProperty);
     updateData = await nestedFieldsMapper(updateData, receivedProperty);
-    updateData = await relatedFieldsMapper(updateData, receivedProperty, tenant);
+    updateData = await relatedFieldsMapper(updateData, receivedProperty, tenant, property);
 
     //------
     //UPDATE
