@@ -54,5 +54,12 @@ export const env = {
     ) as SignOptions["expiresIn"],
   },
 
-  zeroUUID: getEnv("ZERO_UUID")
+  zeroUUID: getEnv("ZERO_UUID"),
+
+  mercadopago: {
+    public_key: getEnv("MERCADOPAGO_PUBLIC_KEY"),
+    access_token: getEnv("MERCADOPAGO_ACCESS_TOKEN"),
+    client_id: getEnv("MERCADOPAGO_CLIENT_ID"),
+    client_secret: getEnv("MERCADOPAGO_CLIENT_SECRET")
+  }
 };
